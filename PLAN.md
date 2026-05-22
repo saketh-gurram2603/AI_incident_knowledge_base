@@ -2,7 +2,7 @@
 
 > **Hard stop: May 29, 2026 (coding)**  
 > **Post May 29: ADRs · DECISIONS.md · README · Stakeholder PPT**  
-> **Current bookmark: ✅ Phase 1 + Phase 2 complete — starting Phase 3**
+> **Current bookmark: ✅ Phases 1–4 complete — next: Phase 5 (Evaluation)**
 
 ---
 
@@ -111,7 +111,7 @@ D:\soft_bank\capstone_project\
 │       │   ├── health.py            ✅ GET /health · GET /health/ready
 │       │   ├── ingestion.py         ✅ POST /ingest · GET /ingest/status
 │       │   ├── search.py            🔲 POST /search (Phase 3)
-│       │   ├── triage.py            🔲 POST /triage · GET /escalations (Phase 4)
+│       │   ├── triage.py            ✅ POST /triage · GET /escalations
 │       │   └── evaluation.py        🔲 POST /evaluate · GET /metrics (Phase 5)
 │       │
 │       ├── core/
@@ -153,12 +153,12 @@ D:\soft_bank\capstone_project\
 │       │   └── hybrid_search.py     🔲 Full orchestrator (Phase 3)
 │       │
 │       ├── agents/
-│       │   ├── state.py             🔲 IncidentState TypedDict (Phase 4)
-│       │   ├── tools.py             🔲 search_incidents · tavily_web_search · classify_priority (Phase 4)
-│       │   ├── l1_triage.py         🔲 GPT-4o-mini + confidence gate (Phase 4)
-│       │   ├── l2_analysis.py       🔲 GPT-4o + Tavily synthesis (Phase 4)
-│       │   ├── l3_specialist.py     🔲 Postgres escalation ticket (Phase 4)
-│       │   └── graph.py             🔲 LangGraph StateGraph (Phase 4)
+│       │   ├── state.py             ✅ IncidentState TypedDict
+│       │   ├── tools.py             ✅ search_incidents · tavily_web_search · classify_priority
+│       │   ├── l1_triage.py         ✅ GPT-4o-mini + confidence gate (≥0.80 = resolve)
+│       │   ├── l2_analysis.py       ✅ GPT-4o + Tavily synthesis (≥0.55 = resolve)
+│       │   ├── l3_specialist.py     ✅ Postgres escalation ticket + EscalationTicketDB ORM
+│       │   └── graph.py             ✅ LangGraph StateGraph + build_triage_graph() + run_triage()
 │       │
 │       └── evaluation/
 │           ├── ir_metrics.py        🔲 ndcg_at_k · map_at_k · recall_at_k · precision_at_k (Phase 5)
@@ -486,20 +486,21 @@ Result: LLM synthesises a **ranked multi-option response** — never hides valid
 
 ---
 
-### 🔲 Phase 4 — Agents / Triage (May 25–26)
+### ✅ Phase 4 — Agents / Triage (May 22)
 
 **Target: LangGraph L1→L2→L3 state machine + `/triage` + `/escalations` endpoints**
 
 | Component | File | Status |
 |---|---|---|
-| Agent state | `src/agents/state.py` | 🔲 TODO |
-| Agent tools | `src/agents/tools.py` | 🔲 TODO |
-| L1 triage node | `src/agents/l1_triage.py` | 🔲 TODO |
-| L2 analysis node | `src/agents/l2_analysis.py` | 🔲 TODO |
-| L3 specialist node | `src/agents/l3_specialist.py` | 🔲 TODO |
-| LangGraph graph | `src/agents/graph.py` | 🔲 TODO |
-| Triage API | `src/api/triage.py` | 🔲 TODO |
-| Integration tests | `tests/integration/test_triage_api.py` | 🔲 TODO |
+| Agent state | `src/agents/state.py` | ✅ Done |
+| Agent tools | `src/agents/tools.py` | ✅ Done |
+| L1 triage node | `src/agents/l1_triage.py` | ✅ Done |
+| L2 analysis node | `src/agents/l2_analysis.py` | ✅ Done |
+| L3 specialist node | `src/agents/l3_specialist.py` | ✅ Done |
+| LangGraph graph | `src/agents/graph.py` | ✅ Done |
+| Triage API | `src/api/triage.py` | ✅ Done |
+| Integration tests | `tests/integration/test_triage_api.py` | ✅ Done (12 tests) |
+| Unit tests (L1/L2/tools) | `tests/unit/test_l1_triage.py` + `test_l2_analysis.py` + `test_tools.py` | ✅ Done (38 tests) |
 
 ---
 
@@ -605,5 +606,5 @@ Result: LLM synthesises a **ranked multi-option response** — never hides valid
 ---
 
 > **Current bookmark: End of Phase 3 ✅**  
-> **Next step: Phase 4 — Agents / Triage (LangGraph L1→L2→L3)**  
+> **Next step: Phase 5 — Evaluation (IR metrics · DeepEval LLM judge · /evaluate endpoint)**  
 > Start with `src/agents/state.py` → `tools.py` → `l1_triage.py` → `l2_analysis.py` → `l3_specialist.py` → `graph.py` → `src/api/triage.py`
