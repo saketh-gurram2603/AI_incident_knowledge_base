@@ -44,6 +44,12 @@ from src.integrations.embeddings import init_embeddings
 from src.integrations.llm import init_llm
 import src.integrations as integrations_pkg
 
+# ── ORM models (must be imported before create_tables) ────────────────────────
+from src.agents.l3_specialist import EscalationTicketDB  # noqa: F401 — registers table
+
+# ── Agent graph ───────────────────────────────────────────────────────────────
+from src.agents.graph import build_triage_graph
+
 # ── API routers ───────────────────────────────────────────────────────────────
 from src.api.health import router as health_router
 from src.api.ingestion import router as ingestion_router
@@ -137,6 +143,13 @@ async def lifespan(app: FastAPI):
         request_timeout=app_config["LLM"]["REQUEST_TIMEOUT_SECONDS"],
         max_retries=app_config["LLM"]["MAX_RETRIES"],
         retry_base_delay=app_config["LLM"]["RETRY_BASE_DELAY_SECONDS"],
+    )
+
+    # ── Triage graph (LangGraph — compiled once, reused per request) ─────────
+    app.state.triage_graph = build_triage_graph(
+        vector_store=vector_store,
+        collection=app_config["QDRANT"]["COLLECTION_NAME"],
+        app_config=app_config,
     )
 
     # ── Store configs on app.state for dependency injection ───────────────────
