@@ -2,7 +2,7 @@
 
 > **Hard stop: May 29, 2026 (coding)**  
 > **Post May 29: ADRs · DECISIONS.md · README · Stakeholder PPT**  
-> **Current bookmark: ✅ Phases 1–4 complete — next: Phase 5 (Evaluation)**
+> **Current bookmark: ✅ Phases 1–5 complete — next: Phase 6 (React + Vite Frontend)**
 
 ---
 
@@ -504,19 +504,20 @@ Result: LLM synthesises a **ranked multi-option response** — never hides valid
 
 ---
 
-### 🔲 Phase 5 — Evaluation (May 26)
+### ✅ Phase 5 — Evaluation (May 22)
 
 **Target: ground truth dataset + IR metrics + DeepEval judge + runner + `/evaluate` endpoint**
 
 | Component | File | Status |
 |---|---|---|
-| IR metrics | `src/evaluation/ir_metrics.py` | 🔲 TODO |
-| LLM judge | `src/evaluation/llm_judge.py` | 🔲 TODO |
-| Eval runner | `src/evaluation/runner.py` | 🔲 TODO |
-| Ground truth | `src/evaluation/ground_truth/dataset.json` | 🔲 TODO (50 QA pairs) |
-| Evaluation API | `src/api/evaluation.py` | 🔲 TODO |
-| Eval tests | `tests/evaluation/test_rag_quality.py` | 🔲 TODO |
-| IR metric unit tests | `tests/unit/test_ir_metrics.py` | 🔲 TODO |
+| IR metrics | `src/evaluation/ir_metrics.py` | ✅ Done (NDCG, MAP, Recall, Precision — pure Python) |
+| LLM judge | `src/evaluation/llm_judge.py` | ✅ Done (DeepEval Faithfulness/Relevancy/Precision) |
+| Eval runner | `src/evaluation/runner.py` | ✅ Done + EvalRunDB ORM |
+| Ground truth | `src/evaluation/ground_truth/dataset.json` | ✅ Done (30 cases, 7 categories) |
+| Ground truth generator | `src/evaluation/ground_truth/generate_dataset.py` | ✅ Done |
+| Evaluation API | `src/api/evaluation.py` | ✅ Done (POST /evaluate, GET /metrics) |
+| Eval quality tests | `tests/evaluation/test_rag_quality.py` | ✅ Done (14 tests) |
+| IR metric unit tests | `tests/unit/test_ir_metrics.py` | ✅ Done (40 tests) |
 
 ---
 
@@ -606,5 +607,5 @@ Result: LLM synthesises a **ranked multi-option response** — never hides valid
 ---
 
 > **Current bookmark: End of Phase 3 ✅**  
-> **Next step: Phase 5 — Evaluation (IR metrics · DeepEval LLM judge · /evaluate endpoint)**  
+> **Next step: Phase 6 — React + Vite Frontend (SearchPage · TriagePage · AnalyticsPage)**  
 > Start with `src/agents/state.py` → `tools.py` → `l1_triage.py` → `l2_analysis.py` → `l3_specialist.py` → `graph.py` → `src/api/triage.py`
