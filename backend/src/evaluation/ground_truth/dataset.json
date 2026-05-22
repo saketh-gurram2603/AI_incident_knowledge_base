@@ -1,0 +1,212 @@
+[
+  {
+    "id": "GT-001",
+    "query": "Database connection pool exhausted causing application timeouts",
+    "category": "Database",
+    "relevant_incident_ids": ["INC-0001", "INC-0002", "INC-0003"],
+    "expected_answer": "Increase the database connection pool size and add a read replica to distribute load. Monitor connection metrics to set appropriate pool limits."
+  },
+  {
+    "id": "GT-002",
+    "query": "Storage disk full on production server",
+    "category": "Storage",
+    "relevant_incident_ids": ["INC-0010", "INC-0011", "INC-0012"],
+    "expected_answer": "Clear log files and temporary data, expand disk capacity or add additional storage volume. Implement automated disk usage alerting."
+  },
+  {
+    "id": "GT-003",
+    "query": "Network latency spike between microservices",
+    "category": "Network",
+    "relevant_incident_ids": ["INC-0020", "INC-0021"],
+    "expected_answer": "Check network interface utilisation and review routing rules. Implement service mesh or load balancer health checks to route around congested nodes."
+  },
+  {
+    "id": "GT-004",
+    "query": "Application throwing OutOfMemoryError every few hours",
+    "category": "Application",
+    "relevant_incident_ids": ["INC-0030", "INC-0031", "INC-0032"],
+    "expected_answer": "Capture heap dump and analyse with memory profiler. Fix identified memory leak, increase JVM heap allocation, and add memory usage monitoring."
+  },
+  {
+    "id": "GT-005",
+    "query": "CPU utilisation at 100% causing service degradation",
+    "category": "Performance",
+    "relevant_incident_ids": ["INC-0040", "INC-0041"],
+    "expected_answer": "Profile the application to identify CPU-intensive code paths. Optimise hot code, implement caching for expensive computations, and scale horizontally if needed."
+  },
+  {
+    "id": "GT-006",
+    "query": "Hardware server failing to boot after power outage",
+    "category": "Hardware",
+    "relevant_incident_ids": ["INC-0050", "INC-0051"],
+    "expected_answer": "Run hardware diagnostics to check disk and memory integrity. Replace failed hardware components and restore from latest backup if filesystem corruption detected."
+  },
+  {
+    "id": "GT-007",
+    "query": "Unauthorised access attempt detected on production database",
+    "category": "Security",
+    "relevant_incident_ids": ["INC-0060", "INC-0061"],
+    "expected_answer": "Immediately block the offending IP, rotate all database credentials, and audit access logs. Enable enhanced logging and notify the security team."
+  },
+  {
+    "id": "GT-008",
+    "query": "Slow database queries degrading application response time",
+    "category": "Database",
+    "relevant_incident_ids": ["INC-0002", "INC-0004", "INC-0005"],
+    "expected_answer": "Identify slow queries via EXPLAIN ANALYZE, add missing indexes, and consider query optimisation or caching frequently accessed results."
+  },
+  {
+    "id": "GT-009",
+    "query": "File storage service returning 503 errors intermittently",
+    "category": "Storage",
+    "relevant_incident_ids": ["INC-0011", "INC-0013"],
+    "expected_answer": "Check storage service health and connectivity. Verify IOPS limits are not exceeded and review storage service logs for underlying errors."
+  },
+  {
+    "id": "GT-010",
+    "query": "Application failing to connect to external API service",
+    "category": "Network",
+    "relevant_incident_ids": ["INC-0021", "INC-0022"],
+    "expected_answer": "Verify the external API endpoint is reachable, check firewall rules and DNS resolution. Implement retry logic with exponential backoff."
+  },
+  {
+    "id": "GT-011",
+    "query": "Service crashing due to unhandled NullPointerException",
+    "category": "Application",
+    "relevant_incident_ids": ["INC-0031", "INC-0033"],
+    "expected_answer": "Add null checks in the identified code path, deploy hotfix, and add unit tests to cover the edge case. Review logs to identify all impacted requests."
+  },
+  {
+    "id": "GT-012",
+    "query": "High memory consumption by background jobs",
+    "category": "Performance",
+    "relevant_incident_ids": ["INC-0041", "INC-0042"],
+    "expected_answer": "Profile background job memory usage and implement streaming or pagination for large dataset processing. Add memory limits to job containers."
+  },
+  {
+    "id": "GT-013",
+    "query": "RAID array degraded after disk failure",
+    "category": "Hardware",
+    "relevant_incident_ids": ["INC-0051", "INC-0052"],
+    "expected_answer": "Replace the failed disk, allow RAID rebuild to complete, verify data integrity, and restore from backup if rebuild fails."
+  },
+  {
+    "id": "GT-014",
+    "query": "SSL certificate expired causing HTTPS failures",
+    "category": "Security",
+    "relevant_incident_ids": ["INC-0061", "INC-0062"],
+    "expected_answer": "Renew the SSL certificate immediately, deploy it to all load balancers, and set up automated certificate renewal using Let's Encrypt or similar."
+  },
+  {
+    "id": "GT-015",
+    "query": "Database deadlock occurring under concurrent writes",
+    "category": "Database",
+    "relevant_incident_ids": ["INC-0003", "INC-0006"],
+    "expected_answer": "Review transaction isolation levels and query ordering. Implement optimistic locking where possible and add deadlock detection alerting."
+  },
+  {
+    "id": "GT-016",
+    "query": "Object storage bucket access denied errors",
+    "category": "Storage",
+    "relevant_incident_ids": ["INC-0012", "INC-0014"],
+    "expected_answer": "Review IAM permissions and bucket policies. Ensure the service account has the required read/write permissions on the target bucket."
+  },
+  {
+    "id": "GT-017",
+    "query": "Load balancer health checks failing for backend nodes",
+    "category": "Network",
+    "relevant_incident_ids": ["INC-0022", "INC-0023"],
+    "expected_answer": "Check health check endpoint configuration and backend node responsiveness. Restart unhealthy nodes and adjust health check thresholds if too aggressive."
+  },
+  {
+    "id": "GT-018",
+    "query": "Microservice deployment failing with ImagePullBackOff",
+    "category": "Application",
+    "relevant_incident_ids": ["INC-0032", "INC-0034"],
+    "expected_answer": "Verify container registry credentials and image tag existence. Update image pull secrets in Kubernetes and ensure the registry is reachable from the cluster."
+  },
+  {
+    "id": "GT-019",
+    "query": "API response times above SLA threshold during peak hours",
+    "category": "Performance",
+    "relevant_incident_ids": ["INC-0042", "INC-0043"],
+    "expected_answer": "Scale out API instances, implement response caching for repeated queries, and enable database query result caching. Review slow query log during peak periods."
+  },
+  {
+    "id": "GT-020",
+    "query": "Server NIC failing causing packet loss",
+    "category": "Hardware",
+    "relevant_incident_ids": ["INC-0052", "INC-0053"],
+    "expected_answer": "Replace the faulty NIC, update network drivers, and failover traffic to redundant network interface during replacement."
+  },
+  {
+    "id": "GT-021",
+    "query": "API keys leaked in public repository",
+    "category": "Security",
+    "relevant_incident_ids": ["INC-0062", "INC-0063"],
+    "expected_answer": "Rotate all exposed credentials immediately, revoke the leaked keys, remove secrets from git history using BFG Repo Cleaner, and implement pre-commit hooks to prevent future leaks."
+  },
+  {
+    "id": "GT-022",
+    "query": "Postgres replication lag causing read replica stale data",
+    "category": "Database",
+    "relevant_incident_ids": ["INC-0004", "INC-0007"],
+    "expected_answer": "Check replication slot lag and network bandwidth between primary and replica. Address any long-running transactions blocking WAL cleanup."
+  },
+  {
+    "id": "GT-023",
+    "query": "Backup job failing due to insufficient disk space",
+    "category": "Storage",
+    "relevant_incident_ids": ["INC-0013", "INC-0015"],
+    "expected_answer": "Clean up old backup files, add more backup storage, and implement backup rotation policy to automatically remove backups older than retention period."
+  },
+  {
+    "id": "GT-024",
+    "query": "VPN connection drops affecting remote worker access",
+    "category": "Network",
+    "relevant_incident_ids": ["INC-0023", "INC-0024"],
+    "expected_answer": "Check VPN gateway utilisation and session limits. Restart VPN service and review gateway logs for authentication or capacity issues."
+  },
+  {
+    "id": "GT-025",
+    "query": "Third party dependency causing build pipeline failures",
+    "category": "Application",
+    "relevant_incident_ids": ["INC-0033", "INC-0035"],
+    "expected_answer": "Pin dependency versions in package.json or requirements.txt, use a private package mirror, and add fallback to cached dependencies."
+  },
+  {
+    "id": "GT-026",
+    "query": "Garbage collection pauses causing latency spikes",
+    "category": "Performance",
+    "relevant_incident_ids": ["INC-0043", "INC-0044"],
+    "expected_answer": "Tune JVM GC settings, switch to G1GC or ZGC for lower pause times, and reduce object allocation rate by optimising hot code paths."
+  },
+  {
+    "id": "GT-027",
+    "query": "Power supply unit failure causing server shutdown",
+    "category": "Hardware",
+    "relevant_incident_ids": ["INC-0053", "INC-0054"],
+    "expected_answer": "Replace faulty PSU with a redundant unit, verify power draw is within capacity, and test failover to redundant PSU before returning to production."
+  },
+  {
+    "id": "GT-028",
+    "query": "Brute force login attempts against admin portal",
+    "category": "Security",
+    "relevant_incident_ids": ["INC-0063", "INC-0064"],
+    "expected_answer": "Enable account lockout after failed attempts, add rate limiting on login endpoint, implement MFA, and block offending IP ranges at the firewall."
+  },
+  {
+    "id": "GT-029",
+    "query": "Index corruption in Elasticsearch causing search failures",
+    "category": "Database",
+    "relevant_incident_ids": ["INC-0005", "INC-0008"],
+    "expected_answer": "Close and reopen the corrupted index. If corruption persists, delete and reindex from source data. Ensure adequate disk space and shard allocation."
+  },
+  {
+    "id": "GT-030",
+    "query": "NFS mount point becoming unresponsive",
+    "category": "Storage",
+    "relevant_incident_ids": ["INC-0014", "INC-0016"],
+    "expected_answer": "Remount the NFS share, check NFS server health and network connectivity. Consider switching to hard mounts with timeout settings to recover automatically."
+  }
+]

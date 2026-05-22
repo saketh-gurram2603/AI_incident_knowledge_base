@@ -46,6 +46,7 @@ import src.integrations as integrations_pkg
 
 # ── ORM models (must be imported before create_tables) ────────────────────────
 from src.agents.l3_specialist import EscalationTicketDB  # noqa: F401 — registers table
+from src.evaluation.runner import EvalRunDB  # noqa: F401 — registers table
 
 # ── Agent graph ───────────────────────────────────────────────────────────────
 from src.agents.graph import build_triage_graph
