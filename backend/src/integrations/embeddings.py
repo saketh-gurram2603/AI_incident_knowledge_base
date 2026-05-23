@@ -8,18 +8,20 @@ import asyncio
 import os
 from typing import Optional
 
-import openai
 from openai import AsyncOpenAI
-from sentence_transformers import SentenceTransformer
 
 from src.integrations.cache import cache_get, cache_set, embedding_cache_key
 from src.handlers.logger import get_logger, log_error, log_info, log_warning
+
+# sentence_transformers / torch are imported lazily inside init_embeddings()
+# and _embed_local() so a torch/torchvision version mismatch never crashes
+# the application at startup — it only surfaces if the local fallback is used.
 
 logger = get_logger("integrations.embeddings")
 
 # ── Module-level state (initialised at startup) ───────────────────────────────
 _openai_client: Optional[AsyncOpenAI] = None
-_local_model: Optional[SentenceTransformer] = None
+_local_model = None   # SentenceTransformer — lazy-loaded
 _embedding_model_name: str = "text-embedding-ada-002"
 _fallback_model_name: str = "all-MiniLM-L6-v2"
 _embedding_ttl: int = 86400
@@ -43,8 +45,17 @@ def init_embeddings(
     log_info("OpenAI embedding client initialised | model=%s", embedding_model)
 
     log_info("Loading local fallback embedding model '%s' ...", fallback_model)
-    _local_model = SentenceTransformer(fallback_model)
-    log_info("Local embedding model '%s' loaded successfully", fallback_model)
+    try:
+        from sentence_transformers import SentenceTransformer  # lazy import
+        _local_model = SentenceTransformer(fallback_model)
+        log_info("Local embedding model '%s' loaded successfully", fallback_model)
+    except Exception as exc:
+        log_warning(
+            "Local embedding model '%s' could not be loaded (torch/torchvision issue?) "
+            "— will rely on OpenAI only | error=%s",
+            fallback_model, exc,
+        )
+        _local_model = None
 
 
 async def embed_text(text: str) -> list[float]:
@@ -138,7 +149,10 @@ async def embed_batch(texts: list[str]) -> list[list[float]]:
 def _embed_local(text: str) -> list[float]:
     """Synchronous local embedding via sentence-transformers."""
     if _local_model is None:
-        raise RuntimeError("Local embedding model not loaded. Call init_embeddings() at startup.")
+        raise RuntimeError(
+            "Local embedding model is unavailable (load failed at startup or not initialised). "
+            "Check that torch and torchvision are compatible versions."
+        )
     vector = _local_model.encode(text, normalize_embeddings=True).tolist()
     log_info("Used local MiniLM embedding for text (len=%d)", len(text))
     return vector

@@ -17,10 +17,11 @@ from tenacity import (
     stop_after_attempt,
     wait_exponential,
 )
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-import torch
 
 from src.handlers.logger import get_logger, log_error, log_info, log_warning
+
+# transformers / torch imported lazily inside init_llm() and _flan_generate()
+# so a torch/torchvision ABI mismatch never crashes the app at startup.
 
 logger = get_logger("integrations.llm")
 
@@ -65,13 +66,24 @@ def init_llm(
     log_info("OpenAI LLM client initialised | l1=%s l2=%s", l1_model, l2_model)
 
     log_info("Loading Flan-T5 fallback model '%s' ...", fallback_model)
-    _flan_tokenizer = AutoTokenizer.from_pretrained(fallback_model)
-    _flan_model = AutoModelForSeq2SeqLM.from_pretrained(
-        fallback_model,
-        torch_dtype=torch.float32,
-    )
-    _flan_model.eval()
-    log_info("Flan-T5 fallback model loaded successfully")
+    try:
+        import torch  # lazy import
+        from transformers import AutoModelForSeq2SeqLM, AutoTokenizer  # lazy import
+        _flan_tokenizer = AutoTokenizer.from_pretrained(fallback_model)
+        _flan_model = AutoModelForSeq2SeqLM.from_pretrained(
+            fallback_model,
+            torch_dtype=torch.float32,
+        )
+        _flan_model.eval()
+        log_info("Flan-T5 fallback model loaded successfully")
+    except Exception as exc:
+        log_warning(
+            "Flan-T5 fallback model could not be loaded (torch/torchvision issue?) "
+            "— OpenAI is the only LLM available | error=%s",
+            exc,
+        )
+        _flan_tokenizer = None
+        _flan_model = None
 
 
 # ── Core LLM call with circuit breaker + retry ───────────────────────────────
@@ -141,7 +153,11 @@ async def _openai_with_retry(
 def _flan_generate(prompt: str, max_new_tokens: int = 256) -> str:
     """Synchronous Flan-T5 generation (runs on CPU, ~20ms)."""
     if _flan_model is None or _flan_tokenizer is None:
-        raise RuntimeError("Flan-T5 not loaded. Call init_llm() at startup.")
+        raise RuntimeError(
+            "Flan-T5 fallback is unavailable (load failed at startup). "
+            "Check torch/torchvision compatibility."
+        )
+    import torch  # lazy import — safe here since model already loaded
     inputs = _flan_tokenizer(prompt, return_tensors="pt", max_length=512, truncation=True)
     with torch.no_grad():
         outputs = _flan_model.generate(

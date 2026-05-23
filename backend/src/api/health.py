@@ -9,7 +9,6 @@ from fastapi.responses import JSONResponse
 
 from src.integrations.cache import health_check as redis_health
 from src.integrations.database import health_check as postgres_health
-from src.integrations.vector_db import VectorStore
 from src.handlers.logger import get_logger
 
 logger = get_logger("api.health")
@@ -24,14 +23,12 @@ async def liveness():
 
 
 @router.get("/health/ready", summary="Readiness probe")
-async def readiness(vector_store: VectorStore = None):
+async def readiness():
     """
     Kubernetes readiness probe.
     Checks Qdrant, Redis, and Postgres connectivity.
     Returns 503 if any dependency is unavailable.
     """
-    from fastapi import Request
-    from src.integrations.vector_db import QdrantVectorStore
 
     checks: dict[str, bool] = {}
 
